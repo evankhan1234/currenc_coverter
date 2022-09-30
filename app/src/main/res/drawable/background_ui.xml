@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/white" />
+            <!-- A numeric value is specified in "radius" for demonstrative purposes only,
+                  it should be @dimen/val_name -->
+            <corners android:radius="20dp" />
+        </shape>
+    </item>
+    <!-- To keep the TOP-LEFT corner UNROUNDED set both OPPOSITE offsets (bottom+right): -->
+    <item
+        android:left="20dp"
+        android:top="20dp"
+        android:bottom="20dp"
+        android:right="20dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+</layer-list>

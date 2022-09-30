@@ -1,26 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+
+    android:background="@color/background_color"
     android:layout_height="match_parent"
-    tools:context=".presentation.main.MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/landing_coordinator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/Theme.CleanArchitectureExercise.AppBarOverlay">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/landing_appbar"
+            app:layout_behavior="com.currency.exchanger.infra.widget.AppBarLayoutBehavior"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.CleanArchitectureExercise.PopupOverlay" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+            android:layout_height="wrap_content">
 
-    <include layout="@layout/content_main" />
+            <LinearLayout
+                android:background="@color/background_color"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/featuredFragment"
+                    android:name="com.currency.exchanger.presentation.main.balance.BalanceFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/popularTvChannelsFragment"
+                    android:name="com.currency.exchanger.presentation.main.currency_exchange.CurrencyExchangeFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+            </LinearLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.currency.exchanger.infra.widget.SmartNestedScrollView
+            android:id="@+id/latestVideoScroller"
+            android:fillViewport="true"
+            android:background="@color/background_color"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/latestVideosFragment"
+                android:name="com.currency.exchanger.presentation.main.history.ExchangeHistoryFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </com.currency.exchanger.infra.widget.SmartNestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>
