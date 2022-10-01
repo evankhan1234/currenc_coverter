@@ -39,7 +39,7 @@
     <string name="main_fragment_create">Create</string>
     <string name="action_signout">Sign out</string>
     <string name="current_balance">Current Balance</string>
-    <string name="current_converter">Current Converter</string>
+    <string name="current_converter">Currency Converter</string>
     <string name="usd_available_balance">$ available balance</string>
     <string name="usd_amount">$ 350.67</string>
     <string name="euro_available_balance">€ available balance</string>

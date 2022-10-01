@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="@dimen/_15sdp"
+    android:layout_marginStart="@dimen/_10sdp"
     android:background="@color/background_color"
-    android:layout_marginEnd="@dimen/_15sdp"
+    android:layout_marginEnd="@dimen/_10sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.main.history.ExchangeHistoryFragment">
     <TextView
@@ -153,7 +153,7 @@
                 android:layout_height="match_parent">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/img_wallet_dynamic"
+                    android:id="@+id/img_first_dynamic"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_centerVertical="true"
@@ -165,19 +165,19 @@
 
 
                 <TextView
-                    android:id="@+id/text_currency_spinner"
+                    android:id="@+id/txt_currency_spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignStart="@+id/img_wallet_dynamic"
-                    android:layout_alignLeft="@+id/img_wallet_dynamic"
+                    android:layout_alignStart="@+id/img_first_dynamic"
+                    android:layout_alignLeft="@+id/img_first_dynamic"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/_40sdp"
                     android:layout_marginLeft="@dimen/_40sdp"
                     android:layout_marginEnd="@dimen/_35sdp"
                     android:layout_marginRight="@dimen/_35sdp"
-                    android:layout_toEndOf="@+id/wallet_spinner"
-                    android:layout_toRightOf="@+id/wallet_spinner"
+                    android:layout_toEndOf="@+id/first_spinner"
+                    android:layout_toRightOf="@+id/first_spinner"
                     android:fontFamily="sans-serif-condensed-medium"
                     android:text="@string/euro"
                     android:textColor="@color/black"
@@ -185,7 +185,7 @@
 
 
                 <ImageView
-                    android:id="@+id/wallet_spinner"
+                    android:id="@+id/first_spinner"
 
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
@@ -210,7 +210,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/layout_box_brand"
-
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
@@ -218,8 +218,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed-medium"
-                    android:text="$"
-                    android:visibility="gone"
+                    android:text="€"
+                    android:textColor="@color/black"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -227,18 +227,17 @@
                 <EditText
 
                     android:id="@+id/text_wallet_table_user_select_currency"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_45sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="3dp"
                     android:background="@null"
-                    android:textAlignment="center"
                     android:hint="00.00"
                     android:inputType="numberDecimal"
                     android:singleLine="true"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
-                    android:textSize="@dimen/_10ssp"  />
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -304,7 +303,7 @@
 
 
                 <TextView
-                    android:id="@+id/text_second_currency_spinner"
+                    android:id="@+id/txt_second_currency_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignStart="@+id/img_second_dynamic"
@@ -323,20 +322,19 @@
 
 
                 <ImageView
-                    android:id="@+id/second_spinner"
+                    android:id="@+id/img_second_currency"
 
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/ic_baseline_arrow_drop_down_24"
-                    android:layout_alignParentRight="true" />
+                    app:srcCompat="@drawable/ic_baseline_arrow_drop_down_24" />
 
             </RelativeLayout>
 
 
         </LinearLayout>
-
         <LinearLayout
             android:id="@+id/linear_second_user"
             android:layout_width="0dp"
@@ -348,39 +346,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/layout_box_brand"
-
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/txt_second_user_selected_currency"
+                    android:id="@+id/text_other_selected_currency"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     android:fontFamily="sans-serif-condensed-medium"
                     android:text="$"
+                    android:textColor="@color/black"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
 
-                    android:id="@+id/text_second_user_select_currency"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_45sdp"
+                    android:id="@+id/text_second_user_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="3dp"
                     android:background="@null"
-                    android:textAlignment="center"
                     android:hint="00.00"
                     android:inputType="numberDecimal"
                     android:singleLine="true"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
-                    android:textSize="@dimen/_10ssp"  />
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
         </LinearLayout>
+
 
 
     </LinearLayout>
