@@ -39,6 +39,7 @@
     <string name="main_fragment_create">Create</string>
     <string name="action_signout">Sign out</string>
     <string name="current_balance">Current Balance</string>
+    <string name="current_converter">Current Converter</string>
     <string name="usd_available_balance">$ available balance</string>
     <string name="usd_amount">$ 350.67</string>
     <string name="euro_available_balance">€ available balance</string>
@@ -48,4 +49,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="think_different_think_exchange">Think Different,Think\nExchange</string>
+    <string name="commission_fee">Commission fee</string>
+    <string name="_0_70_eur">0.70 EUR</string>
+    <string name="british_pound">British Pound</string>
+    <string name="usd">United States Dollar</string>
+    <string name="euro">Euro</string>
+    <string name="exchange">Exchange</string>
 </resources>

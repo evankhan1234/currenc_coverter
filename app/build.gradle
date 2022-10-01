@@ -59,10 +59,11 @@ dependencies {
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
     // httpz
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_logging_version"
-
+    implementation 'com.makeramen:roundedimageview:2.3.0'
     // coroutine
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
