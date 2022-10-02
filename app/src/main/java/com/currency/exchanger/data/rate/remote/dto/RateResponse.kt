@@ -4,8 +4,11 @@ import com.currency.exchanger.data.product.remote.dto.ProductUserResponse
 import com.google.gson.annotations.SerializedName
 
 data class RateResponse(
+    @SerializedName("motd") var motd: MotdResponse,
     @SerializedName("success") var success: Boolean,
-    @SerializedName("product_name") var name: String,
-    @SerializedName("price") var price: Int,
-    @SerializedName("user") var user: ProductUserResponse
+    @SerializedName("historical") var historical: Boolean,
+    @SerializedName("date") var date: String,
+    @SerializedName("result") var result: Double,
+    @SerializedName("query") var query: QueryResponse,
+    @SerializedName("info") var info: InfoResponse,
 )

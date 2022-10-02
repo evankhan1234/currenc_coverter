@@ -8,13 +8,13 @@ plugins {
 
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.ydhnwb.cleanarchitectureexercise"
+        applicationId "com.currency.exchanger"
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -22,7 +22,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // default build config
-        buildConfigField 'String', 'API_BASE_URL', '"https://golang-heroku.herokuapp.com/api/"'
+        buildConfigField 'String', 'API_BASE_URL', '"https://api.exchangerate.host/"'
     }
 
     buildTypes {
@@ -52,6 +52,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.4.0-alpha04'
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.0-alpha04'
+    implementation 'com.google.firebase:protolite-well-known-types:18.0.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -79,6 +80,10 @@ dependencies {
     // Activity KTX for viewModels()
     implementation "androidx.activity:activity-ktx:$activity_ktx_version"
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
-
+    //ROOM DB
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    implementation "androidx.room:room-paging:$room_version"
 
 }
