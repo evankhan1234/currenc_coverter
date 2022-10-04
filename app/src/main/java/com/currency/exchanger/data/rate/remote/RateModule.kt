@@ -2,12 +2,17 @@ package com.currency.exchanger.data.rate.remote
 
 import com.currency.exchanger.data.common.module.DatabaseModule
 import com.currency.exchanger.data.common.module.NetworkModule
+import com.currency.exchanger.data.rate.local.BalanceLocalRepositoryImpl
 import com.currency.exchanger.data.rate.local.RateLocalRepositoryImpl
+import com.currency.exchanger.data.rate.local.dao.BalanceDao
 import com.currency.exchanger.data.rate.local.dao.RateDao
+import com.currency.exchanger.data.rate.local.datasource.BalanceLocalDataSource
+import com.currency.exchanger.data.rate.local.datasource.BalanceLocalDataSourceImpl
 import com.currency.exchanger.data.rate.local.datasource.RateLocalDataSource
 import com.currency.exchanger.data.rate.local.datasource.RateLocalDataSourceImpl
 import com.currency.exchanger.data.rate.remote.api.ExchangeRateApi
 import com.currency.exchanger.data.rate.remote.repository.RateRepositoryImpl
+import com.currency.exchanger.domain.rate.BalanceLocalRepository
 import com.currency.exchanger.domain.rate.RateLocalRepository
 import com.currency.exchanger.domain.rate.RateRepository
 import dagger.Module
@@ -42,5 +47,16 @@ class RateModule {
     @Provides
     fun provideRateLocalRepository(rateLocalDataSource: RateLocalDataSource) : RateLocalRepository {
         return RateLocalRepositoryImpl(rateLocalDataSource)
+    }
+
+    @Provides
+    fun provideBalanceLocalDataSource(balanceDao: BalanceDao): BalanceLocalDataSource {
+        return BalanceLocalDataSourceImpl(balanceDao)
+    }
+
+    @Singleton
+    @Provides
+    fun provideBalanceLocalRepository(balanceLocalDataSource: BalanceLocalDataSource) : BalanceLocalRepository {
+        return BalanceLocalRepositoryImpl(balanceLocalDataSource)
     }
 }

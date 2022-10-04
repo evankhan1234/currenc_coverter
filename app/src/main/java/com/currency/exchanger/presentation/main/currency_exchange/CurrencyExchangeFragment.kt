@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
@@ -43,6 +44,7 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
         observeFirstRate()
         observeSecondRate()
         main()
+
 
         binding.txtFirstAmount.addTextChangedListener(object : TextWatcher {
 
@@ -173,6 +175,15 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
             picker.show(parentFragmentManager, "CURRENCY_PICKER")
         }
         binding.btnSend.setOnClickListener {
+            if (binding.txtFirstAmount.text.toString().isEmpty()){
+                Toast.makeText(requireActivity(),"Please enter amount",Toast.LENGTH_SHORT).show()
+            }
+            else{
+                val firstAmount=df.format(binding.txtFirstAmount.text.toString().toDouble())
+                val secondAmount=df.format(binding.txtSecondUserAmount.text.toString().toDouble())
+                viewModel.exchange(firstAmount.toDouble(),secondAmount.toDouble(),firstCurrencyName,secondCurrencyName)
+                Toast.makeText(requireActivity(),"Successfully Exchanged",Toast.LENGTH_SHORT).show()
+            }
             Log.e("flag_spinner", "onSelectCurrency: $firstCurrencyName")
             Log.e("flag_spinner", "onSelectCurrency: $secondCurrencyName")
         }
@@ -216,6 +227,7 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
         viewModel.convertSecondValue(10.00,"USD","EUR")
         firstCurrencyName="EUR"
         secondCurrencyName="USD"
+        viewModel.createBalance()
     }
 
     override fun onDestroy() {

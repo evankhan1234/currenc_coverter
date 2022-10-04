@@ -15,7 +15,7 @@ import dagger.hilt.components.SingletonComponent
 object DatabaseModule {
     @Provides
     fun provideDatabase(app: Application): CurrencyDB =
-        Room.databaseBuilder(app, CurrencyDB::class.java, "currency_db").fallbackToDestructiveMigration()
+        Room.databaseBuilder(app, CurrencyDB::class.java, "currency_db").allowMainThreadQueries().fallbackToDestructiveMigration()
             .build()
 
     @Provides

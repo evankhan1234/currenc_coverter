@@ -2,12 +2,13 @@ package com.currency.exchanger.presentation.main.currency_exchange
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.currency.exchanger.data.rate.local.dto.Balance
 import com.currency.exchanger.data.rate.local.dto.Rate
 import com.currency.exchanger.domain.common.base.BaseResult
-import com.currency.exchanger.domain.product.entity.ProductEntity
 import com.currency.exchanger.domain.rate.Entity.RateEntity
-import com.currency.exchanger.domain.rate.usecase.ConvertUseCase
-import com.currency.exchanger.domain.rate.usecase.ExchangeLocalUseCase
+import com.currency.exchanger.domain.rate.usecase.*
+import com.currency.exchanger.infra.utils.SomeUtils
+import com.mynameismidori.currencypicker.ExtendedCurrency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -17,8 +18,12 @@ import javax.inject.Inject
 @HiltViewModel
 class CurrencyExchangeViewModel @Inject constructor(
     private val convertUseCase: ConvertUseCase,
-    private val exchangeLocalUseCase: ExchangeLocalUseCase
-) : ViewModel() {
+    private val exchangeLocalUseCase: ExchangeLocalUseCase,
+    private val balanceLocalUseCase: BalanceLocalUseCase,
+    private val getBalanceListUseCase: GetBalanceListUseCase,
+    private val balanceSizeUseCase: BalanceSizeUseCase
+
+    ) : ViewModel() {
     private val state =
         MutableStateFlow<CurrencyExchangeFragmentState>(CurrencyExchangeFragmentState.Init)
     val mState: StateFlow<CurrencyExchangeFragmentState> get() = state
@@ -85,6 +90,41 @@ class CurrencyExchangeViewModel @Inject constructor(
                         is BaseResult.Error -> showToast(result.rawResponse.toString())
                     }
                 }
+        }
+    }
+    fun createBalance(){
+
+        viewModelScope.launch {
+            if (balanceSizeUseCase.invoke()>90){
+                val currency = ExtendedCurrency.getAllCurrencies()
+                for(cur in currency ){
+                    if(cur.code.equals("EUR")){
+                        balanceLocalUseCase.invoke(Balance(0,cur.code,cur.symbol,1000.00,1000.00,"2010-12-12"))
+                    }
+                    else{
+                        balanceLocalUseCase.invoke(Balance(0,cur.code,cur.symbol,0.00,0.00,"2010-12-12"))
+                    }
+
+                }
+            }
+
+
+        }
+    }
+
+    fun exchange(fromAmount: Double,toAmount: Double,  fromCurrency: String, toCurrency: String){
+        viewModelScope.launch {
+            val size= balanceSizeUseCase.invoke()
+            val item=size/10
+            if (SomeUtils.isInteger(item.toDouble())) {
+                exchangeLocalUseCase.invoke(Rate(0,fromCurrency,toCurrency,fromAmount,toAmount,0.00, SomeUtils.convertDateTime()))
+            }
+            else{
+                exchangeLocalUseCase.invoke(Rate(0,fromCurrency,toCurrency,fromAmount,toAmount,0.70, SomeUtils.convertDateTime()))
+
+            }
+
+
         }
     }
 }

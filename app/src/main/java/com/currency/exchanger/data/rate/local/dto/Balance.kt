@@ -16,6 +16,8 @@ data class Balance(
     val currency_symbol: String,
     @SerializedName("available")
     val available: Double?,
+    @SerializedName("euro_available")
+    val euroAvailable: Double?,
     @SerializedName("update_date")
     val updateDate: String?,
 ) : Serializable
