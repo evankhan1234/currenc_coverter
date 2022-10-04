@@ -16,11 +16,15 @@ class BalanceLocalRepositoryImpl @Inject constructor(
         balanceLocalDataSource.addBalance(balance)
     }
 
-    override suspend fun balanceSize(): Int {
-        return balanceLocalDataSource.balanceSize()
+    override suspend fun updateBalance(available: Double,euroAvailable: Double, currencyName: String): Int {
+        return balanceLocalDataSource.updateBalance(available, euroAvailable, currencyName)
     }
 
     override suspend fun getBalanceList(): Flow<List<Balance>> {
        return balanceLocalDataSource.getBalanceList()
+    }
+
+    override suspend fun getBalance(currencyName: String): Flow<Balance> {
+        return balanceLocalDataSource.getBalance(currencyName)
     }
 }

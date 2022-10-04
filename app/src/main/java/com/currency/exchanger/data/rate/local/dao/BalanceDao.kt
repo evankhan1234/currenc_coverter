@@ -1,7 +1,6 @@
 package com.currency.exchanger.data.rate.local.dao
 
 
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -17,14 +16,14 @@ interface BalanceDao {
     @Query("SELECT * FROM balance order by pk desc")
     fun getAllBalances(): Flow<List<Balance>>
 
-    @Query("SELECT * FROM balance WHERE pk = :id")
-    fun getBalance(id: Int): Flow<Balance>
+    @Query("SELECT * FROM balance WHERE currencyName = :currencyName")
+    fun getBalance(currencyName: String): Flow<Balance>
 
     @Query("DELETE FROM balance")
     suspend fun deleteAllBalances()
 
-    @Query("SELECT COUNT(*) FROM balance")
-    suspend fun balanceSize ():Int
+    @Query("UPDATE balance SET available = :available,euroAvailable = :euroAvailable WHERE currencyName = :currencyName")
+    suspend fun updateBalance (available: Double,euroAvailable: Double, currencyName: String):Int
 
     @Insert
     fun insertAll(vararg balance: Balance?)

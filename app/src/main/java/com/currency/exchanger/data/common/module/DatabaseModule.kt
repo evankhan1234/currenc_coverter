@@ -3,7 +3,7 @@ package com.currency.exchanger.data.common.module
 import android.app.Application
 import androidx.room.Room
 import com.currency.exchanger.data.rate.local.dao.BalanceDao
-import com.currency.exchanger.data.rate.local.dao.RateDao
+import com.currency.exchanger.data.rate.local.dao.ExchangeDao
 import com.currency.exchanger.data.rate.local.db.CurrencyDB
 import dagger.Module
 import dagger.Provides
@@ -19,7 +19,7 @@ object DatabaseModule {
             .build()
 
     @Provides
-    fun provideRateDao(currencyDB: CurrencyDB) : RateDao = currencyDB.rateDao()
+    fun provideRateDao(currencyDB: CurrencyDB) : ExchangeDao = currencyDB.rateDao()
 
     @Provides
     fun provideBalanceDao(currencyDB: CurrencyDB) : BalanceDao = currencyDB.balanceDao()

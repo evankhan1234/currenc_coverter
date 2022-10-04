@@ -80,7 +80,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/text_wallet_table_money"
+                    android:id="@+id/txt_conventions_fee"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_45sdp"
                     android:layout_gravity="center"

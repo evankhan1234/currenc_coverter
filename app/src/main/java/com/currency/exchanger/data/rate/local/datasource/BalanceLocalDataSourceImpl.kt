@@ -9,11 +9,15 @@ class BalanceLocalDataSourceImpl(private val balanceDao: BalanceDao) : BalanceLo
         balanceDao.addBalances(balance)
     }
 
-    override suspend fun balanceSize(): Int {
-        return balanceDao.balanceSize()
+    override suspend fun updateBalance(available: Double,euroAvailable: Double, currencyName: String): Int {
+        return balanceDao.updateBalance(available, euroAvailable, currencyName)
     }
 
     override suspend fun getBalanceList(): Flow<List<Balance>> {
         return balanceDao.getAllBalances()
+    }
+
+    override suspend fun getBalance(currencyName: String): Flow<Balance> {
+        return balanceDao.getBalance(currencyName)
     }
 }

@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-@Entity(tableName = "rate")
-data class Rate(
+@Entity(tableName = "exchange")
+data class Exchange(
     @PrimaryKey(autoGenerate = true)
     var pk: Long = 0,
     @SerializedName("from_currency")

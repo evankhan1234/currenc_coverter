@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import com.currency.exchanger.R
 import com.currency.exchanger.databinding.FragmentCurrencyExchangeBinding
 import com.currency.exchanger.domain.rate.Entity.RateEntity
+import com.currency.exchanger.infra.utils.SomeUtils
 import com.currency.exchanger.presentation.common.extension.showToast
 import com.mynameismidori.currencypicker.CurrencyPicker
 import com.mynameismidori.currencypicker.ExtendedCurrency
@@ -44,7 +45,7 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
         observeFirstRate()
         observeSecondRate()
         main()
-
+        count()
 
         binding.txtFirstAmount.addTextChangedListener(object : TextWatcher {
 
@@ -61,6 +62,9 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
                     val total : Double = s.toString().toDouble() *firstRate
                     binding.txtSecondUserAmount.setText(df.format(total))
                     Log.e("flag_spinner", "onSelectCurrency: $s")
+                }
+                else{
+                    binding.txtSecondUserAmount.setText("")
                 }
 
             }
@@ -99,6 +103,7 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
                 findNavController().navigateUp()
             }
             is CurrencyExchangeFragmentState.ShowToast -> requireActivity().showToast(state.message)
+            is CurrencyExchangeFragmentState.ShowCount ->  conventionFee(state.count)
             is CurrencyExchangeFragmentState.Init -> Unit
         }
     }
@@ -116,12 +121,17 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
     }
+
+    private fun count(){
+        viewModel.count.flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { size ->
+                size?.let { conventionFee(it) }
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+    }
     private fun handleFirstRate(rateEntity: RateEntity){
-
         val currency = ExtendedCurrency.getCurrencyByISO(rateEntity.query.from)
-        Log.e("first","rate"+currency.symbol)
         firstRate=rateEntity.info.rate
-
         binding.txtCurrencySpinner.text = currency.name
         binding.imgFirstDynamic.setImageResource(currency.flag)
         binding.textSelectedCurrency.text = currency.symbol
@@ -129,14 +139,26 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
     private fun handleSecondRate(rateEntity: RateEntity){
         val currency = ExtendedCurrency.getCurrencyByISO(rateEntity.query.from)
         lastRate=rateEntity.info.rate
-        Log.e("second","rate"+rateEntity.info.rate)
         binding.txtSecondCurrencyText.text = currency.name
         binding.imgSecondDynamic.setImageResource(currency.flag)
         binding.textOtherSelectedCurrency.text=currency.symbol
     }
+    private fun conventionFee(count: Int?){
+        if (count!!>5){
+            val item = count.toDouble() / 5
+            if (SomeUtils.isInteger(item)) {
+                binding.txtConventionsFee.setText("0.00 EUR")
+            }
+            else{
+                binding.txtConventionsFee.setText("0.70 EUR")
+            }
+        }
+        else{
+            binding.txtConventionsFee.setText("0.00 EUR")
+        }
+    }
     private fun createProduct(){
         binding.firstSpinner.setOnClickListener {
-
             val picker: CurrencyPicker = CurrencyPicker.newInstance("Select Currency")
             picker.setListener { name, code, symbol, flagDrawableResID ->
                 binding.txtCurrencySpinner.text = name
@@ -150,7 +172,6 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
                 viewModel.convertFirstValue(1.00,code,secondCurrencyName)
                 binding.txtSecondUserAmount.setText("")
                 binding.txtFirstAmount.setText("")
-                Log.e("flag_spinner", "onSelectCurrency: $code$symbol")
                 picker.dismiss()
             }
             picker.show(parentFragmentManager, "CURRENCY_PICKER")
@@ -167,7 +188,6 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
                     binding.textOtherSelectedCurrency.text=symbol
                 }
                 viewModel.convertFirstValue(1.00,firstCurrencyName,secondCurrencyName)
-                Log.e("flag_spinner", "onSelectCurrency: $code$symbol")
                 binding.txtSecondUserAmount.setText("")
                 binding.txtFirstAmount.setText("")
                 picker.dismiss()
@@ -177,33 +197,19 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
         binding.btnSend.setOnClickListener {
             if (binding.txtFirstAmount.text.toString().isEmpty()){
                 Toast.makeText(requireActivity(),"Please enter amount",Toast.LENGTH_SHORT).show()
+                viewModel.countTransactions()
+                Log.e("flag_spinner", "onSelectCurrency: ${viewModel.count.value}")
             }
             else{
                 val firstAmount=df.format(binding.txtFirstAmount.text.toString().toDouble())
                 val secondAmount=df.format(binding.txtSecondUserAmount.text.toString().toDouble())
                 viewModel.exchange(firstAmount.toDouble(),secondAmount.toDouble(),firstCurrencyName,secondCurrencyName)
                 Toast.makeText(requireActivity(),"Successfully Exchanged",Toast.LENGTH_SHORT).show()
+                viewModel.countTransactions()
             }
-            Log.e("flag_spinner", "onSelectCurrency: $firstCurrencyName")
-            Log.e("flag_spinner", "onSelectCurrency: $secondCurrencyName")
         }
     }
 
-    private fun validate(name: String, price: String) : Boolean {
-        resetAllError()
-
-        if(name.isEmpty()){
-            setProductNameError(getString(R.string.error_product_name_not_valid))
-            return false
-        }
-
-        if(price.toIntOrNull() == null){
-            setProductPriceError(getString(R.string.error_price_not_valid))
-            return false
-        }
-
-        return true
-    }
 
     private fun handleLoading(isLoading: Boolean) {
       //  binding.saveButton.isEnabled = !isLoading
@@ -217,10 +223,6 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
      //   binding.productPriceInput.error = e
     }
 
-    private fun resetAllError(){
-        setProductNameError(null)
-        setProductPriceError(null)
-    }
 
     private fun main(){
         viewModel.convertFirstValue(10.00,"EUR","USD")
@@ -228,6 +230,7 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
         firstCurrencyName="EUR"
         secondCurrencyName="USD"
         viewModel.createBalance()
+        viewModel.countTransactions()
     }
 
     override fun onDestroy() {

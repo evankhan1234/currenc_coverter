@@ -3,17 +3,17 @@ package com.currency.exchanger.data.rate.remote
 import com.currency.exchanger.data.common.module.DatabaseModule
 import com.currency.exchanger.data.common.module.NetworkModule
 import com.currency.exchanger.data.rate.local.BalanceLocalRepositoryImpl
-import com.currency.exchanger.data.rate.local.RateLocalRepositoryImpl
+import com.currency.exchanger.data.rate.local.ExchangeLocalRepositoryImpl
 import com.currency.exchanger.data.rate.local.dao.BalanceDao
-import com.currency.exchanger.data.rate.local.dao.RateDao
+import com.currency.exchanger.data.rate.local.dao.ExchangeDao
 import com.currency.exchanger.data.rate.local.datasource.BalanceLocalDataSource
 import com.currency.exchanger.data.rate.local.datasource.BalanceLocalDataSourceImpl
-import com.currency.exchanger.data.rate.local.datasource.RateLocalDataSource
-import com.currency.exchanger.data.rate.local.datasource.RateLocalDataSourceImpl
+import com.currency.exchanger.data.rate.local.datasource.ExchangeLocalDataSource
+import com.currency.exchanger.data.rate.local.datasource.ExchangeLocalDataSourceImpl
 import com.currency.exchanger.data.rate.remote.api.ExchangeRateApi
 import com.currency.exchanger.data.rate.remote.repository.RateRepositoryImpl
 import com.currency.exchanger.domain.rate.BalanceLocalRepository
-import com.currency.exchanger.domain.rate.RateLocalRepository
+import com.currency.exchanger.domain.rate.ExchangeLocalRepository
 import com.currency.exchanger.domain.rate.RateRepository
 import dagger.Module
 import dagger.Provides
@@ -39,14 +39,14 @@ class RateModule {
 
 
     @Provides
-    fun provideLocalDataSource(rateDao: RateDao): RateLocalDataSource {
-        return RateLocalDataSourceImpl(rateDao)
+    fun provideLocalDataSource(rateDao: ExchangeDao): ExchangeLocalDataSource {
+        return ExchangeLocalDataSourceImpl(rateDao)
     }
 
     @Singleton
     @Provides
-    fun provideRateLocalRepository(rateLocalDataSource: RateLocalDataSource) : RateLocalRepository {
-        return RateLocalRepositoryImpl(rateLocalDataSource)
+    fun provideRateLocalRepository(exchangeLocalDataSource: ExchangeLocalDataSource) : ExchangeLocalRepository {
+        return ExchangeLocalRepositoryImpl(exchangeLocalDataSource)
     }
 
     @Provides
