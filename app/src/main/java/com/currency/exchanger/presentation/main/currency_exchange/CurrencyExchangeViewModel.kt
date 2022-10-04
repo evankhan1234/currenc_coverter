@@ -13,6 +13,7 @@ import com.mynameismidori.currencypicker.ExtendedCurrency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 import javax.inject.Inject
 
 
@@ -27,6 +28,7 @@ class CurrencyExchangeViewModel @Inject constructor(
     private val currencyDetailsUseCase: CurrencyDetailsUseCase
 
     ) : ViewModel() {
+    private val df = DecimalFormat("00.00")
     private val state =
         MutableStateFlow<CurrencyExchangeFragmentState>(CurrencyExchangeFragmentState.Init)
     val mState: StateFlow<CurrencyExchangeFragmentState> get() = state
@@ -40,6 +42,9 @@ class CurrencyExchangeViewModel @Inject constructor(
 
     private val _count = MutableStateFlow<Int?>(null)
     val count : StateFlow<Int?> get() = _count
+
+    private val _euroRate = MutableStateFlow<Double?>(null)
+    val euroRate : StateFlow<Double?> get() = _euroRate
 
     private fun setLoading() {
         state.value = CurrencyExchangeFragmentState.IsLoading(true)
@@ -55,6 +60,7 @@ class CurrencyExchangeViewModel @Inject constructor(
     private fun showCount(value: Int?) {
         state.value = CurrencyExchangeFragmentState.ShowCount(value)
     }
+
     private fun successCreate() {
         state.value = CurrencyExchangeFragmentState.SuccessCreate
     }
@@ -137,14 +143,14 @@ class CurrencyExchangeViewModel @Inject constructor(
             }
            val from =currencyDetailsUseCase.invoke(fromCurrency)
            val to =currencyDetailsUseCase.invoke(toCurrency)
-            euroRate(toCurrency)
+            euroRate(toCurrency,fromAmount,toAmount)
             val fromAvailable=from
            // updateBalanceUseCase.invoke()
         }
     }
-    fun euroRate(currencyName: String) {
+    fun euroRate(currencyName: String,fromAmount:Double,toAmount: Double) {
         viewModelScope.launch {
-            convertUseCase.invoke(1.00, "EUR", currencyName)
+            convertUseCase.invoke(toAmount, currencyName, "EUR")
                 .onStart {
                     setLoading()
                 }
@@ -155,15 +161,17 @@ class CurrencyExchangeViewModel @Inject constructor(
                 .collect { result ->
                     hideLoading()
                     when (result) {
-                        is BaseResult.Success ->  _firstRate.value = result.data
+                        is BaseResult.Success ->  _euroRate.value = result.data.result
                         is BaseResult.Error -> showToast(result.rawResponse.toString())
 
                     }
-                    //updateFromBalance("dd",7676.00)
+
+
+                    updateFromBalance(currencyName,fromAmount,df.format(euroRate).toDouble())
                 }
         }
     }
-    fun updateFromBalance(from:String,fromAmount: Double) {
+    fun updateFromBalance(from:String,fromAmount: Double,euroAmount: Double) {
         viewModelScope.launch {
             currencyDetailsUseCase.invoke(from)
                 .onStart {
@@ -175,7 +183,7 @@ class CurrencyExchangeViewModel @Inject constructor(
                 }
                 .collect { result ->
                     val fromAvailable=result.available!! - fromAmount
-                  ///  updateBalanceUseCase.invoke(fromAvailable)
+                    updateBalanceUseCase.invoke(fromAvailable,euroAmount,from)
 
                 }
         }
