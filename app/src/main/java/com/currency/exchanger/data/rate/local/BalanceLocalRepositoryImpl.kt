@@ -16,7 +16,7 @@ class BalanceLocalRepositoryImpl @Inject constructor(
         balanceLocalDataSource.addBalance(balance)
     }
 
-    override suspend fun updateBalance(available: Double,euroAvailable: Double, currencyName: String): Int {
+    override suspend fun updateBalance(available: Double,euroAvailable: Double, currencyName: String) {
         return balanceLocalDataSource.updateBalance(available, euroAvailable, currencyName)
     }
 

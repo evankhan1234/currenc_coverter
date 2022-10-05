@@ -23,7 +23,7 @@ interface BalanceDao {
     suspend fun deleteAllBalances()
 
     @Query("UPDATE balance SET available = :available,euroAvailable = :euroAvailable WHERE currencyName = :currencyName")
-    suspend fun updateBalance (available: Double,euroAvailable: Double, currencyName: String):Int
+    suspend fun updateBalance (available: Double,euroAvailable: Double, currencyName: String)
 
     @Insert
     fun insertAll(vararg balance: Balance?)

@@ -27,24 +27,30 @@ class CurrencyExchangeViewModel @Inject constructor(
     private val exchangeCountUseCase: ExchangeCountUseCase,
     private val currencyDetailsUseCase: CurrencyDetailsUseCase
 
-    ) : ViewModel() {
+) : ViewModel() {
     private val df = DecimalFormat("00.00")
     private val state =
         MutableStateFlow<CurrencyExchangeFragmentState>(CurrencyExchangeFragmentState.Init)
     val mState: StateFlow<CurrencyExchangeFragmentState> get() = state
 
     private val _firstRate = MutableStateFlow<RateEntity?>(null)
-    val firstRate : StateFlow<RateEntity?> get() = _firstRate
+    val firstRate: StateFlow<RateEntity?> get() = _firstRate
 
     private val _secondRate = MutableStateFlow<RateEntity?>(null)
-    val secondRate : StateFlow<RateEntity?> get() = _secondRate
+    val secondRate: StateFlow<RateEntity?> get() = _secondRate
 
 
     private val _count = MutableStateFlow<Int?>(null)
-    val count : StateFlow<Int?> get() = _count
+    val count: StateFlow<Int?> get() = _count
+
+    private val _fromBoolean = MutableStateFlow<Boolean?>(true)
+    val fromBoolean: StateFlow<Boolean?> get() = _fromBoolean
+
+    private val _toBoolean = MutableStateFlow<Boolean?>(true)
+    val toBoolean: StateFlow<Boolean?> get() = _toBoolean
 
     private val _euroRate = MutableStateFlow<Double?>(null)
-    val euroRate : StateFlow<Double?> get() = _euroRate
+    val euroRate: StateFlow<Double?> get() = _euroRate
 
     private fun setLoading() {
         state.value = CurrencyExchangeFragmentState.IsLoading(true)
@@ -56,6 +62,17 @@ class CurrencyExchangeViewModel @Inject constructor(
 
     private fun showToast(message: String) {
         state.value = CurrencyExchangeFragmentState.ShowToast(message)
+    }
+
+    private  fun updateBalance(currencyName: String, amount: Double, euroAmount: Double, type: String) {
+        Log.e("ff","ff")
+        state.value = CurrencyExchangeFragmentState.UpdateBalance(currencyName,amount, euroAmount, type)
+
+    }
+    private  fun updateAmount(balance: Balance,amount: Double, euroAmount: Double,currencyName: String,type: String) {
+        Log.e("ff","ff")
+        state.value = CurrencyExchangeFragmentState.UpdateAmount(balance, amount, euroAmount, currencyName, type)
+
     }
     private fun showCount(value: Int?) {
         state.value = CurrencyExchangeFragmentState.ShowCount(value)
@@ -78,12 +95,13 @@ class CurrencyExchangeViewModel @Inject constructor(
                 .collect { result ->
                     hideLoading()
                     when (result) {
-                        is BaseResult.Success ->  _firstRate.value = result.data
+                        is BaseResult.Success -> _firstRate.value = result.data
                         is BaseResult.Error -> showToast(result.rawResponse.toString())
                     }
                 }
         }
     }
+
     fun convertSecondValue(amount: Double, from: String, to: String) {
         viewModelScope.launch {
 
@@ -98,23 +116,41 @@ class CurrencyExchangeViewModel @Inject constructor(
                 .collect { result ->
                     hideLoading()
                     when (result) {
-                        is BaseResult.Success ->  _secondRate.value = result.data
+                        is BaseResult.Success -> _secondRate.value = result.data
                         is BaseResult.Error -> showToast(result.rawResponse.toString())
                     }
                 }
         }
     }
-    fun createBalance(){
+
+    fun createBalance() {
 
         viewModelScope.launch {
-            if (exchangeCountUseCase.invoke()<90){
+            if (exchangeCountUseCase.invoke() < 90) {
                 val currency = ExtendedCurrency.getAllCurrencies()
-                for(cur in currency ){
-                    if(cur.code.equals("EUR")){
-                        balanceLocalUseCase.invoke(Balance(0,cur.code,cur.symbol,1000.00,1000.00,SomeUtils.convertDateTime()))
-                    }
-                    else{
-                        balanceLocalUseCase.invoke(Balance(0,cur.code,cur.symbol,0.00,0.00,SomeUtils.convertDateTime()))
+                for (cur in currency) {
+                    if (cur.code.equals("EUR")) {
+                        balanceLocalUseCase.invoke(
+                            Balance(
+                                0,
+                                cur.code,
+                                cur.symbol,
+                                1000.00,
+                                1000.00,
+                                SomeUtils.convertDateTime()
+                            )
+                        )
+                    } else {
+                        balanceLocalUseCase.invoke(
+                            Balance(
+                                0,
+                                cur.code,
+                                cur.symbol,
+                                0.00,
+                                0.00,
+                                SomeUtils.convertDateTime()
+                            )
+                        )
                     }
 
                 }
@@ -124,33 +160,62 @@ class CurrencyExchangeViewModel @Inject constructor(
         }
     }
 
-    fun exchange(fromAmount: Double,toAmount: Double,  fromCurrency: String, toCurrency: String){
+    fun exchange(fromAmount: Double, toAmount: Double, fromCurrency: String, toCurrency: String) {
+        _fromBoolean.value=true
+        _toBoolean.value=true
         viewModelScope.launch {
-            val size= exchangeCountUseCase.invoke()
-            if (size>5){
+            val size = exchangeCountUseCase.invoke()
+            if (size > 5) {
                 val item = size.toDouble() / 5
                 if (SomeUtils.isInteger(item)) {
-                    exchangeLocalUseCase.invoke(Exchange(0,fromCurrency,toCurrency,fromAmount,toAmount,0.00, SomeUtils.convertDateTime()))
-                }
-                else{
-                    exchangeLocalUseCase.invoke(Exchange(0,fromCurrency,toCurrency,fromAmount,toAmount,0.70, SomeUtils.convertDateTime()))
+                    exchangeLocalUseCase.invoke(
+                        Exchange(
+                            0,
+                            fromCurrency,
+                            toCurrency,
+                            fromAmount,
+                            toAmount,
+                            0.00,
+                            SomeUtils.convertDateTime()
+                        )
+                    )
+                } else {
+                    exchangeLocalUseCase.invoke(
+                        Exchange(
+                            0,
+                            fromCurrency,
+                            toCurrency,
+                            fromAmount,
+                            toAmount,
+                            0.70,
+                            SomeUtils.convertDateTime()
+                        )
+                    )
 
                 }
-            }
-            else{
-                exchangeLocalUseCase.invoke(Exchange(0,fromCurrency,toCurrency,fromAmount,toAmount,0.00, SomeUtils.convertDateTime()))
+            } else {
+                exchangeLocalUseCase.invoke(
+                    Exchange(
+                        0,
+                        fromCurrency,
+                        toCurrency,
+                        fromAmount,
+                        toAmount,
+                        0.00,
+                        SomeUtils.convertDateTime()
+                    )
+                )
 
             }
-           val from =currencyDetailsUseCase.invoke(fromCurrency)
-           val to =currencyDetailsUseCase.invoke(toCurrency)
-            euroRate(toCurrency,fromAmount,toAmount)
-            val fromAvailable=from
-           // updateBalanceUseCase.invoke()
+            euroRate(toCurrency, toAmount, "to")
+            euroRate(fromCurrency, fromAmount, "from")
+
         }
     }
-    fun euroRate(currencyName: String,fromAmount:Double,toAmount: Double) {
+
+    private suspend fun euroRate(currencyName: String, amount: Double, type: String) {
         viewModelScope.launch {
-            convertUseCase.invoke(toAmount, currencyName, "EUR")
+            convertUseCase.invoke(amount, currencyName, "EUR")
                 .onStart {
                     setLoading()
                 }
@@ -161,39 +226,75 @@ class CurrencyExchangeViewModel @Inject constructor(
                 .collect { result ->
                     hideLoading()
                     when (result) {
-                        is BaseResult.Success ->  _euroRate.value = result.data.result
+                        is BaseResult.Success -> updateBalance(
+                            currencyName,
+                            amount,
+                            df.format(result.data.result).toDouble(),
+                            type
+                        )
                         is BaseResult.Error -> showToast(result.rawResponse.toString())
 
                     }
 
-
-                    updateFromBalance(currencyName,fromAmount,df.format(euroRate).toDouble())
                 }
         }
     }
-    fun updateFromBalance(from:String,fromAmount: Double,euroAmount: Double) {
-        viewModelScope.launch {
-            currencyDetailsUseCase.invoke(from)
-                .onStart {
-                    setLoading()
-                }
-                .catch { exception ->
-                    hideLoading()
-                    showToast(exception.stackTraceToString())
-                }
-                .collect { result ->
-                    val fromAvailable=result.available!! - fromAmount
-                    updateBalanceUseCase.invoke(fromAvailable,euroAmount,from)
 
-                }
+    private fun getToBalance(currencyName: String, toAmount: Double, euroAmount: Double) {
+        Log.e("sdddd","Ddd")
+        viewModelScope.launch {
+            currencyDetailsUseCase.invoke(currencyName).collect {
+                updateAmount(it, toAmount, euroAmount, currencyName,"to")
+            }
         }
     }
-    fun countTransactions(){
+
+    private  fun getFromBalance(currencyName: String, fromAmount: Double, euroAmount: Double) {
         viewModelScope.launch {
-            _count.value= exchangeCountUseCase.invoke()
+            currencyDetailsUseCase.invoke( currencyName).collect {
+                updateAmount(it, fromAmount, euroAmount, currencyName,"from")
+            }
+        }
+    }
+
+    fun updateData(balance: Balance,amount: Double, euroAmount: Double,currencyName: String,type: String){
+
+       viewModelScope.launch {
+           if (type =="from"){
+               if (fromBoolean.value!!){
+                   val toAvailable = balance.available!! - amount
+                   updateBalanceUseCase.invoke(toAvailable, euroAmount, currencyName)
+                   _fromBoolean.value=false
+               }
+           }
+           else{
+               if (toBoolean.value!!){
+                   val toAvailable = balance.available!! + amount
+                   updateBalanceUseCase.invoke(toAvailable, euroAmount, currencyName)
+                   _toBoolean.value=false
+               }
+
+           }
+
+       }
+
+    }
+
+    fun countTransactions() {
+        viewModelScope.launch {
+            _count.value = exchangeCountUseCase.invoke()
             showCount(count.value)
-            Log.e("_count",""+exchangeCountUseCase.invoke())
 
+        }
+    }
+    fun update(currencyName: String, amount: Double, euroAmount: Double, type: String){
+        Log.e("currencyName","dd")
+        viewModelScope.launch {
+            if (type == "to") {
+                getToBalance(currencyName, amount, euroAmount)
+            } else {
+                getFromBalance(currencyName, amount, euroAmount)
+            }
         }
     }
 }
@@ -204,4 +305,6 @@ sealed class CurrencyExchangeFragmentState {
     data class IsLoading(val isLoading: Boolean) : CurrencyExchangeFragmentState()
     data class ShowToast(val message: String) : CurrencyExchangeFragmentState()
     data class ShowCount(val count: Int?) : CurrencyExchangeFragmentState()
+    data class UpdateBalance(val currencyName: String, val amount: Double,val euroAmount: Double, val type: String) : CurrencyExchangeFragmentState()
+    data class UpdateAmount(val balance: Balance,val amount: Double,val  euroAmount: Double,val currencyName: String,val type: String) : CurrencyExchangeFragmentState()
 }

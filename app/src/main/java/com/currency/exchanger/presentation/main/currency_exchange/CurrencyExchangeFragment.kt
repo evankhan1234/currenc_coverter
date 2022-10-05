@@ -16,6 +16,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.currency.exchanger.R
+import com.currency.exchanger.data.rate.local.dto.Balance
 import com.currency.exchanger.databinding.FragmentCurrencyExchangeBinding
 import com.currency.exchanger.domain.rate.Entity.RateEntity
 import com.currency.exchanger.infra.utils.SomeUtils
@@ -104,6 +105,8 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
             }
             is CurrencyExchangeFragmentState.ShowToast -> requireActivity().showToast(state.message)
             is CurrencyExchangeFragmentState.ShowCount ->  conventionFee(state.count)
+            is CurrencyExchangeFragmentState.UpdateBalance ->  update(state.currencyName,state.amount,state.euroAmount,state.type)
+            is CurrencyExchangeFragmentState.UpdateAmount ->  updateAmount(state.balance,state.amount,state.euroAmount,state.currencyName,state.type)
             is CurrencyExchangeFragmentState.Init -> Unit
         }
     }
@@ -142,6 +145,14 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
         binding.txtSecondCurrencyText.text = currency.name
         binding.imgSecondDynamic.setImageResource(currency.flag)
         binding.textOtherSelectedCurrency.text=currency.symbol
+    }
+    private fun update(currencyName: String, amount: Double, euroAmount: Double, type: String){
+        Log.e("aaa","dd")
+        viewModel.update(currencyName, amount, euroAmount, type)
+    }
+    private fun updateAmount(balance: Balance, amount: Double, euroAmount: Double, currencyName: String, type: String){
+        Log.e("aaa","dd")
+        viewModel.updateData(balance, amount, euroAmount, currencyName, type)
     }
     private fun conventionFee(count: Int?){
         if (count!!>5){

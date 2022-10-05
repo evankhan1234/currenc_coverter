@@ -9,7 +9,7 @@ class BalanceLocalDataSourceImpl(private val balanceDao: BalanceDao) : BalanceLo
         balanceDao.addBalances(balance)
     }
 
-    override suspend fun updateBalance(available: Double,euroAvailable: Double, currencyName: String): Int {
+    override suspend fun updateBalance(available: Double,euroAvailable: Double, currencyName: String) {
         return balanceDao.updateBalance(available, euroAvailable, currencyName)
     }
 

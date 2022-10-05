@@ -9,7 +9,7 @@ import com.currency.exchanger.data.rate.local.dto.Exchange
 
 @Database(
     entities = [Exchange::class, Balance::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class CurrencyDB : RoomDatabase() {
