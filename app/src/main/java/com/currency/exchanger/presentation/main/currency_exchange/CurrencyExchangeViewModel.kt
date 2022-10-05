@@ -1,5 +1,8 @@
 package com.currency.exchanger.presentation.main.currency_exchange
 
+import android.os.Handler
+import android.os.Looper
+import android.provider.SyncStateContract.Helpers.update
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -59,18 +62,20 @@ class CurrencyExchangeViewModel @Inject constructor(
     private fun hideLoading() {
         state.value = CurrencyExchangeFragmentState.IsLoading(false)
     }
-
+    private fun exchangeHide(boolean: Boolean) {
+        state.value = CurrencyExchangeFragmentState.IsExchange(boolean)
+    }
     private fun showToast(message: String) {
         state.value = CurrencyExchangeFragmentState.ShowToast(message)
     }
 
     private  fun updateBalance(currencyName: String, amount: Double, euroAmount: Double, type: String) {
-        Log.e("ff","ff")
+        Log.e("currencyName","later"+currencyName)
         state.value = CurrencyExchangeFragmentState.UpdateBalance(currencyName,amount, euroAmount, type)
 
     }
     private  fun updateAmount(balance: Balance,amount: Double, euroAmount: Double,currencyName: String,type: String) {
-        Log.e("ff","ff")
+        Log.e("getToBalance","updateAmount"+currencyName)
         state.value = CurrencyExchangeFragmentState.UpdateAmount(balance, amount, euroAmount, currencyName, type)
 
     }
@@ -163,6 +168,7 @@ class CurrencyExchangeViewModel @Inject constructor(
     fun exchange(fromAmount: Double, toAmount: Double, fromCurrency: String, toCurrency: String) {
         _fromBoolean.value=true
         _toBoolean.value=true
+        exchangeHide(false)
         viewModelScope.launch {
             val size = exchangeCountUseCase.invoke()
             if (size > 5) {
@@ -215,6 +221,8 @@ class CurrencyExchangeViewModel @Inject constructor(
 
     private suspend fun euroRate(currencyName: String, amount: Double, type: String) {
         viewModelScope.launch {
+
+            Log.e("euro","rate"+currencyName)
             convertUseCase.invoke(amount, currencyName, "EUR")
                 .onStart {
                     setLoading()
@@ -226,10 +234,11 @@ class CurrencyExchangeViewModel @Inject constructor(
                 .collect { result ->
                     hideLoading()
                     when (result) {
-                        is BaseResult.Success -> updateBalance(
+                        is BaseResult.Success ->
+                            update(
                             currencyName,
                             amount,
-                            df.format(result.data.result).toDouble(),
+                            result.data.info.rate,
                             type
                         )
                         is BaseResult.Error -> showToast(result.rawResponse.toString())
@@ -241,19 +250,19 @@ class CurrencyExchangeViewModel @Inject constructor(
     }
 
     private fun getToBalance(currencyName: String, toAmount: Double, euroAmount: Double) {
-        Log.e("sdddd","Ddd")
         viewModelScope.launch {
-            currencyDetailsUseCase.invoke(currencyName).collect {
-                updateAmount(it, toAmount, euroAmount, currencyName,"to")
-            }
+            val data =currencyDetailsUseCase.invoke( currencyName)
+            updateData(data, toAmount, euroAmount, currencyName,"to")
+
         }
     }
 
     private  fun getFromBalance(currencyName: String, fromAmount: Double, euroAmount: Double) {
+        Log.e("getFromBalance :",currencyName+euroAmount)
         viewModelScope.launch {
-            currencyDetailsUseCase.invoke( currencyName).collect {
-                updateAmount(it, fromAmount, euroAmount, currencyName,"from")
-            }
+            val data =currencyDetailsUseCase.invoke( currencyName)
+            updateData(data, fromAmount, euroAmount, currencyName,"from")
+
         }
     }
 
@@ -262,16 +271,47 @@ class CurrencyExchangeViewModel @Inject constructor(
        viewModelScope.launch {
            if (type =="from"){
                if (fromBoolean.value!!){
-                   val toAvailable = balance.available!! - amount
-                   updateBalanceUseCase.invoke(toAvailable, euroAmount, currencyName)
-                   _fromBoolean.value=false
+                   val fromAvailable = balance.available!! - amount
+                   val euro=euroAmount * fromAvailable
+                   if (fromAvailable>-1){
+                       if (balance.currencyName == "EUR"){
+                           updateBalanceUseCase.invoke(fromAvailable, fromAvailable, currencyName)
+                       }
+                       else{
+                           updateBalanceUseCase.invoke(fromAvailable, euro, currencyName)
+                       }
+                       _fromBoolean.value=false
+                   }
+                   else{
+                       showToast("You have no balance")
+                       _toBoolean.value=false
+                       exchangeHide(true)
+                   }
                }
+
            }
            else{
                if (toBoolean.value!!){
                    val toAvailable = balance.available!! + amount
-                   updateBalanceUseCase.invoke(toAvailable, euroAmount, currencyName)
-                   _toBoolean.value=false
+                   Log.e("toAvailable","toAvailable"+toAvailable)
+                   Log.e("toAvailable","currencyName"+balance.currencyName)
+                   val euro=euroAmount * toAvailable
+                   if (toAvailable>-1){
+                       if (balance.currencyName == "EUR"){
+                           updateBalanceUseCase.invoke(toAvailable, toAvailable, currencyName)
+                       }
+                       else{
+                           updateBalanceUseCase.invoke(toAvailable, euro, currencyName)
+                       }
+                       exchangeHide(true)
+                       showToast("Successfully Exchanged")
+                       _toBoolean.value=false
+                   }else{
+                       showToast("You have no balance")
+                       _toBoolean.value=false
+                       exchangeHide(true)
+                   }
+
                }
 
            }
@@ -288,10 +328,12 @@ class CurrencyExchangeViewModel @Inject constructor(
         }
     }
     fun update(currencyName: String, amount: Double, euroAmount: Double, type: String){
-        Log.e("currencyName","dd")
         viewModelScope.launch {
             if (type == "to") {
-                getToBalance(currencyName, amount, euroAmount)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    getToBalance(currencyName, amount, euroAmount)
+                }, 2000)
+
             } else {
                 getFromBalance(currencyName, amount, euroAmount)
             }
@@ -303,6 +345,7 @@ sealed class CurrencyExchangeFragmentState {
     object Init : CurrencyExchangeFragmentState()
     object SuccessCreate : CurrencyExchangeFragmentState()
     data class IsLoading(val isLoading: Boolean) : CurrencyExchangeFragmentState()
+    data class IsExchange(val isLoading: Boolean) : CurrencyExchangeFragmentState()
     data class ShowToast(val message: String) : CurrencyExchangeFragmentState()
     data class ShowCount(val count: Int?) : CurrencyExchangeFragmentState()
     data class UpdateBalance(val currencyName: String, val amount: Double,val euroAmount: Double, val type: String) : CurrencyExchangeFragmentState()

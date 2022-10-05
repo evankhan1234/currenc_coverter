@@ -17,7 +17,7 @@ interface BalanceDao {
     fun getAllBalances(): Flow<List<Balance>>
 
     @Query("SELECT * FROM balance WHERE currencyName = :currencyName")
-    fun getBalance(currencyName: String): Flow<Balance>
+    fun getBalance(currencyName: String): Balance
 
     @Query("DELETE FROM balance")
     suspend fun deleteAllBalances()

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class CurrencyDetailsUseCase @Inject constructor(private val balanceLocalRepository: BalanceLocalRepository) {
-    suspend fun invoke(currencyName:String) : Flow<Balance>{
+    suspend fun invoke(currencyName:String) : Balance{
         return balanceLocalRepository.getBalance(currencyName)
     }
 }

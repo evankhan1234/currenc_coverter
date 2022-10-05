@@ -17,7 +17,7 @@ class BalanceLocalDataSourceImpl(private val balanceDao: BalanceDao) : BalanceLo
         return balanceDao.getAllBalances()
     }
 
-    override suspend fun getBalance(currencyName: String): Flow<Balance> {
+    override suspend fun getBalance(currencyName: String):Balance {
         return balanceDao.getBalance(currencyName)
     }
 }

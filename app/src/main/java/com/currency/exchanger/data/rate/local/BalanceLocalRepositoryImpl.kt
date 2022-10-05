@@ -24,7 +24,7 @@ class BalanceLocalRepositoryImpl @Inject constructor(
        return balanceLocalDataSource.getBalanceList()
     }
 
-    override suspend fun getBalance(currencyName: String): Flow<Balance> {
+    override suspend fun getBalance(currencyName: String): Balance {
         return balanceLocalDataSource.getBalance(currencyName)
     }
 }

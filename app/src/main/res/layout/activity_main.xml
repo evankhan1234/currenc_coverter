@@ -14,18 +14,17 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/landing_appbar"
-            app:layout_behavior="com.currency.exchanger.infra.widget.AppBarLayoutBehavior"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-            android:layout_height="wrap_content">
+            app:layout_behavior="com.currency.exchanger.infra.widget.AppBarLayoutBehavior">
 
             <LinearLayout
-                android:background="@color/background_color"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/background_color"
                 android:orientation="vertical"
-                >
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/featuredFragment"
@@ -45,17 +44,17 @@
 
         <com.currency.exchanger.infra.widget.SmartNestedScrollView
             android:id="@+id/latestVideoScroller"
-            android:fillViewport="true"
-            android:background="@color/background_color"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/background_color"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/latestVideosFragment"
                 android:name="com.currency.exchanger.presentation.main.history.ExchangeHistoryFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
         </com.currency.exchanger.infra.widget.SmartNestedScrollView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
@@ -99,6 +100,7 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
     private fun handleState(state: CurrencyExchangeFragmentState){
         when(state){
             is CurrencyExchangeFragmentState.IsLoading -> handleLoading(state.isLoading)
+            is CurrencyExchangeFragmentState.IsExchange -> handleExchange(state.isLoading)
             is CurrencyExchangeFragmentState.SuccessCreate -> {
                 setResultOkToPreviousFragment()
                 findNavController().navigateUp()
@@ -147,11 +149,9 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
         binding.textOtherSelectedCurrency.text=currency.symbol
     }
     private fun update(currencyName: String, amount: Double, euroAmount: Double, type: String){
-        Log.e("aaa","dd")
         viewModel.update(currencyName, amount, euroAmount, type)
     }
     private fun updateAmount(balance: Balance, amount: Double, euroAmount: Double, currencyName: String, type: String){
-        Log.e("aaa","dd")
         viewModel.updateData(balance, amount, euroAmount, currencyName, type)
     }
     private fun conventionFee(count: Int?){
@@ -198,7 +198,7 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
                 } else {
                     binding.textOtherSelectedCurrency.text=symbol
                 }
-                viewModel.convertFirstValue(1.00,firstCurrencyName,secondCurrencyName)
+                viewModel.convertSecondValue(1.00,secondCurrencyName,firstCurrencyName)
                 binding.txtSecondUserAmount.setText("")
                 binding.txtFirstAmount.setText("")
                 picker.dismiss()
@@ -215,17 +215,22 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
                 val firstAmount=df.format(binding.txtFirstAmount.text.toString().toDouble())
                 val secondAmount=df.format(binding.txtSecondUserAmount.text.toString().toDouble())
                 viewModel.exchange(firstAmount.toDouble(),secondAmount.toDouble(),firstCurrencyName,secondCurrencyName)
-                Toast.makeText(requireActivity(),"Successfully Exchanged",Toast.LENGTH_SHORT).show()
                 viewModel.countTransactions()
+                binding.txtSecondUserAmount.setText("")
+                binding.txtFirstAmount.setText("")
             }
         }
     }
 
 
     private fun handleLoading(isLoading: Boolean) {
-      //  binding.saveButton.isEnabled = !isLoading
+        binding.progressBar.isVisible = isLoading
     }
 
+    private fun handleExchange(isLoading: Boolean) {
+        binding.btnSend.isClickable = isLoading
+
+    }
     private fun setProductNameError(e: String?){
       //  binding.productNameInput.error = e
     }

@@ -7,6 +7,6 @@ interface BalanceLocalDataSource {
     suspend fun addBalance(balance: Balance)
     suspend fun updateBalance(available: Double,euroAvailable: Double, currencyName: String)
     suspend fun getBalanceList(): Flow<List<Balance>>
-    suspend fun getBalance(currencyName: String): Flow<Balance>
+    suspend fun getBalance(currencyName: String): Balance
 
 }
