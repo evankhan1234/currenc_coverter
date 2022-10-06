@@ -13,7 +13,7 @@ interface BalanceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addBalances(balance: Balance)
 
-    @Query("SELECT * FROM balance order by pk desc")
+    @Query("SELECT * FROM balance")
     fun getAllBalances(): Flow<List<Balance>>
 
     @Query("SELECT * FROM balance WHERE currencyName = :currencyName")

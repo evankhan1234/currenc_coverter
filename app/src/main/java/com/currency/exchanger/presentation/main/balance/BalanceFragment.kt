@@ -5,18 +5,24 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.currency.exchanger.R
+import com.currency.exchanger.data.rate.local.dto.Balance
 import com.currency.exchanger.databinding.FragmentBalanceBinding
 import com.currency.exchanger.databinding.FragmentCurrencyExchangeBinding
+import com.currency.exchanger.domain.product.entity.ProductEntity
 import com.currency.exchanger.presentation.common.extension.showToast
 import com.currency.exchanger.presentation.main.create_product.CreateMainFragmentState
 import com.currency.exchanger.presentation.main.create_product.CreateMainFragmentViewModel
+import com.currency.exchanger.presentation.main.home.HomeMainFragmentState
+import com.currency.exchanger.presentation.main.home.HomeMainProductAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -26,20 +32,14 @@ class BalanceFragment : Fragment(R.layout.fragment_balance){
     private var _binding : FragmentBalanceBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel : CreateMainFragmentViewModel by viewModels()
+    private val viewModel : BalanceViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentBalanceBinding.bind(view)
+        setupRecyclerView()
         observe()
-        createProduct()
-    }
-
-    private fun setResultOkToPreviousFragment(){
-        val r = Bundle().apply {
-            putBoolean("success_create", true)
-        }
-        setFragmentResult("success_create", r)
+        observeBalance()
     }
 
     private fun observe(){
@@ -48,42 +48,37 @@ class BalanceFragment : Fragment(R.layout.fragment_balance){
             .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
-    private fun handleState(state: CreateMainFragmentState){
+    private fun handleState(state: BalanceFragmentState){
         when(state){
-            is CreateMainFragmentState.IsLoading -> handleLoading(state.isLoading)
-            is CreateMainFragmentState.SuccessCreate -> {
-                setResultOkToPreviousFragment()
-                findNavController().navigateUp()
+            is BalanceFragmentState.IsLoading -> handleLoading(state.isLoading)
+            is BalanceFragmentState.ShowToast -> requireActivity().showToast(state.message)
+            is BalanceFragmentState.Init -> Unit
+        }
+    }
+    private fun observeBalance(){
+        viewModel.balance
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { products ->
+                handleProducts(products)
             }
-            is CreateMainFragmentState.ShowToast -> requireActivity().showToast(state.message)
-            is CreateMainFragmentState.Init -> Unit
-        }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
-    private fun createProduct(){
-//        binding.saveButton.setOnClickListener {
-//            val name = binding.productNameEditText.text.toString().trim()
-//            val price = binding.productPriceEditText.text.toString().trim()
-//            if(validate(name, price)){
-//                viewModel.createProduct(ProductCreateRequest(name, price.toInt()))
-//            }
-//        }
+
+    private fun handleProducts(balances: List<Balance>){
+        binding.productsRecyclerView.adapter?.let {
+            if(it is BalanceAdapter){
+                it.updateList(balances)
+            }
+        }
     }
+    private fun setupRecyclerView(){
+        val mAdapter = BalanceAdapter(mutableListOf(),requireContext())
 
-    private fun validate(name: String, price: String) : Boolean {
-        resetAllError()
-
-        if(name.isEmpty()){
-            setProductNameError(getString(R.string.error_product_name_not_valid))
-            return false
+        binding.productsRecyclerView.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.HORIZONTAL,false)
         }
-
-        if(price.toIntOrNull() == null){
-            setProductPriceError(getString(R.string.error_price_not_valid))
-            return false
-        }
-
-        return true
     }
 
     private fun handleLoading(isLoading: Boolean) {
@@ -97,12 +92,6 @@ class BalanceFragment : Fragment(R.layout.fragment_balance){
     private fun setProductPriceError(e: String?){
         //   binding.productPriceInput.error = e
     }
-
-    private fun resetAllError(){
-        setProductNameError(null)
-        setProductPriceError(null)
-    }
-
 
     override fun onDestroy() {
         super.onDestroy()

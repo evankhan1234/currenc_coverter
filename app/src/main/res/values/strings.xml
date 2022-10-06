@@ -43,7 +43,7 @@
     <string name="transactions_history">Transactions History</string>
     <string name="usd_available_balance">$ available balance</string>
     <string name="usd_amount">$ 350.67</string>
-    <string name="euro_available_balance">€ available balance</string>
+    <string name="euro_available_balance">available balance</string>
     <string name="euro_amount">€ 250.01</string>
     <string name="flexible">flexible</string>
     <string name="sub_title">Easy stake wth higher returns</string>

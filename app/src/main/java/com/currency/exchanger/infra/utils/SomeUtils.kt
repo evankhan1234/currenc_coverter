@@ -6,7 +6,7 @@ import kotlin.math.floor
 
 object SomeUtils {
     fun convertDateTime() : String{
-        val dtf: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss")
+        val dtf: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM dd,yyyy hh:mm a")
         val now: LocalDateTime = LocalDateTime.now()
         return dtf.format(now)
     }

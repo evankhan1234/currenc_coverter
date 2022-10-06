@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/radius_default"
+    android:background="?attr/selectableItemBackground"
+    android:layout_margin="@dimen/margin_extra_extra_small"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_first_dynamic"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_5sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="@dimen/_5sdp"
+            app:riv_corner_radius="100dp" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_second_dynamic"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_from_currency_name"
+            android:layout_marginLeft="@dimen/_5sdp"
+            app:riv_corner_radius="100dp" />
+        <TextView
+            android:id="@+id/txt_from_currency_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_17sdp"
+            android:text="From - EUR"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_12ssp"
+            android:textAlignment="center"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:gravity="center_horizontal"
+            app:layout_constraintStart_toEndOf="@+id/img_first_dynamic"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="@dimen/_5sdp" />
+        <TextView
+            android:id="@+id/txt_from_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="120.00 EUR"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@color/teal_700"
+            android:textSize="@dimen/_12ssp"
+            android:textAlignment="center"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:gravity="center_horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginRight="@dimen/_10sdp" />
+        <TextView
+            android:id="@+id/txt_to_currency_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:text="Converted - USD"
+            app:layout_constraintStart_toEndOf="@+id/img_second_dynamic"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_12ssp"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textAlignment="center"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:gravity="center_horizontal"
+            app:layout_constraintTop_toBottomOf="@id/txt_from_currency_name"
+            android:layout_marginLeft="@dimen/_5sdp" />
+        <TextView
+            android:id="@+id/txt_to_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="120.00 USD"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@color/purple_700"
+            android:textSize="@dimen/_12ssp"
+            android:textAlignment="center"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:gravity="center_horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_from_currency_name"
+            android:layout_marginRight="@dimen/_10sdp" />
+        <TextView
+            android:id="@+id/txt_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:text="2012-22-11"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_11ssp"
+            android:fontFamily="sans-serif-condensed-medium"
+
+            android:textAlignment="center"
+            android:layout_marginStart="@dimen/_7sdp"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/_2sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_to_currency_name"
+            android:layout_marginLeft="@dimen/_7sdp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

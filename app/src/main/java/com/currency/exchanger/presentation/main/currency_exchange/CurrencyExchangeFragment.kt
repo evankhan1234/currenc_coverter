@@ -61,7 +61,7 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
                                        before: Int, count: Int) {
 
                 if (s.toString()!=""){
-                    val total : Double = s.toString().toDouble() *firstRate
+                    val total : Double = s.toString().toDouble() *lastRate
                     binding.txtSecondUserAmount.setText(df.format(total))
                     Log.e("flag_spinner", "onSelectCurrency: $s")
                 }
@@ -142,7 +142,8 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
         binding.textSelectedCurrency.text = currency.symbol
     }
     private fun handleSecondRate(rateEntity: RateEntity){
-        val currency = ExtendedCurrency.getCurrencyByISO(rateEntity.query.from)
+        Log.e("rateEntity",""+rateEntity.query.to)
+        val currency = ExtendedCurrency.getCurrencyByISO(rateEntity.query.to)
         lastRate=rateEntity.info.rate
         binding.txtSecondCurrencyText.text = currency.name
         binding.imgSecondDynamic.setImageResource(currency.flag)
@@ -198,7 +199,7 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
                 } else {
                     binding.textOtherSelectedCurrency.text=symbol
                 }
-                viewModel.convertSecondValue(1.00,secondCurrencyName,firstCurrencyName)
+                viewModel.convertSecondValue(1.00,firstCurrencyName,secondCurrencyName)
                 binding.txtSecondUserAmount.setText("")
                 binding.txtFirstAmount.setText("")
                 picker.dismiss()
@@ -242,7 +243,7 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
 
     private fun main(){
         viewModel.convertFirstValue(10.00,"EUR","USD")
-        viewModel.convertSecondValue(10.00,"USD","EUR")
+        viewModel.convertSecondValue(10.00,"EUR","USD")
         firstCurrencyName="EUR"
         secondCurrencyName="USD"
         viewModel.createBalance()

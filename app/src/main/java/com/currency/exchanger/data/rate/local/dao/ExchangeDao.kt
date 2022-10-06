@@ -15,7 +15,7 @@ interface ExchangeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addExchange(exchange: Exchange)
 
-    @Query("SELECT * FROM exchange")
+    @Query("SELECT * FROM exchange order by pk desc")
     fun getAllExchanges(): Flow<List<Exchange>>
 
     @Query("SELECT * FROM exchange WHERE fromCurrency = :movieId")

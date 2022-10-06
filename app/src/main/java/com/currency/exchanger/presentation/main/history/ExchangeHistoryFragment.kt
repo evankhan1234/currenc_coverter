@@ -1,108 +1,92 @@
 package com.currency.exchanger.presentation.main.history
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.currency.exchanger.R
-import com.currency.exchanger.databinding.FragmentCurrencyExchangeBinding
+import com.currency.exchanger.data.rate.local.dto.Exchange
 import com.currency.exchanger.databinding.FragmentExchangeHistoryBinding
 import com.currency.exchanger.presentation.common.extension.showToast
-import com.currency.exchanger.presentation.main.create_product.CreateMainFragmentState
-import com.currency.exchanger.presentation.main.create_product.CreateMainFragmentViewModel
+
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
-class ExchangeHistoryFragment : Fragment(R.layout.fragment_exchange_history){
-    private var _binding : FragmentExchangeHistoryBinding? = null
+class ExchangeHistoryFragment : Fragment(R.layout.fragment_exchange_history) {
+    private var _binding: FragmentExchangeHistoryBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel : CreateMainFragmentViewModel by viewModels()
+    private val viewModel: ExchangeHistoryViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentExchangeHistoryBinding.bind(view)
+        setupRecyclerView()
         observe()
-        createProduct()
-    }
+        observeBalance()
 
-    private fun setResultOkToPreviousFragment(){
-        val r = Bundle().apply {
-            putBoolean("success_create", true)
-        }
-        setFragmentResult("success_create", r)
     }
-
-    private fun observe(){
+    private fun observe() {
         viewModel.mState.flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
             .onEach { state -> handleState(state) }
             .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
-    private fun handleState(state: CreateMainFragmentState){
-        when(state){
-            is CreateMainFragmentState.IsLoading -> handleLoading(state.isLoading)
-            is CreateMainFragmentState.SuccessCreate -> {
-                setResultOkToPreviousFragment()
-                findNavController().navigateUp()
+
+    private fun handleState(state: ExchangeFragmentState) {
+        when (state) {
+            is ExchangeFragmentState.IsLoading -> handleLoading(state.isLoading)
+            is ExchangeFragmentState.ShowToast -> requireActivity().showToast(state.message)
+            is ExchangeFragmentState.Init -> Unit
+        }
+    }
+
+    private fun observeBalance() {
+        viewModel.exchange
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach { exchange ->
+                handleProducts(exchange)
             }
-            is CreateMainFragmentState.ShowToast -> requireActivity().showToast(state.message)
-            is CreateMainFragmentState.Init -> Unit
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+    }
+
+
+    private fun handleProducts(exchanges: List<Exchange>) {
+        binding.historyRecyclerView.adapter?.let {
+            if (it is HistoryAdapter) {
+                it.updateList(exchanges)
+            }
         }
     }
 
-    private fun createProduct(){
-//        binding.saveButton.setOnClickListener {
-//            val name = binding.productNameEditText.text.toString().trim()
-//            val price = binding.productPriceEditText.text.toString().trim()
-//            if(validate(name, price)){
-//                viewModel.createProduct(ProductCreateRequest(name, price.toInt()))
-//            }
-//        }
-    }
-
-    private fun validate(name: String, price: String) : Boolean {
-        resetAllError()
-
-        if(name.isEmpty()){
-            setProductNameError(getString(R.string.error_product_name_not_valid))
-            return false
+    private fun setupRecyclerView() {
+        val mAdapter = HistoryAdapter(mutableListOf(), requireContext())
+        binding.historyRecyclerView.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(
+                requireActivity(),
+                LinearLayoutManager.VERTICAL, false
+            )
         }
-
-        if(price.toIntOrNull() == null){
-            setProductPriceError(getString(R.string.error_price_not_valid))
-            return false
-        }
-
-        return true
     }
 
     private fun handleLoading(isLoading: Boolean) {
         //  binding.saveButton.isEnabled = !isLoading
     }
 
-    private fun setProductNameError(e: String?){
+    private fun setProductNameError(e: String?) {
         //  binding.productNameInput.error = e
     }
 
-    private fun setProductPriceError(e: String?){
+    private fun setProductPriceError(e: String?) {
         //   binding.productPriceInput.error = e
     }
-
-    private fun resetAllError(){
-        setProductNameError(null)
-        setProductPriceError(null)
-    }
-
 
     override fun onDestroy() {
         super.onDestroy()
