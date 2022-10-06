@@ -1,6 +1,5 @@
 package com.currency.exchanger.data.rate.remote.dto
 
-import com.currency.exchanger.data.product.remote.dto.ProductUserResponse
 import com.google.gson.annotations.SerializedName
 
 data class RateResponse(

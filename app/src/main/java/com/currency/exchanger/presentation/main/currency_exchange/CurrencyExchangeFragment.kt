@@ -39,6 +39,7 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
     private var lastRate : Double = 0.0
     private var firstCurrencyName : String = ""
     private var secondCurrencyName : String = ""
+    private var message : String = ""
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentCurrencyExchangeBinding.bind(view)
@@ -48,6 +49,7 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
         observeSecondRate()
         main()
         count()
+        observationPopUp()
 
         binding.txtFirstAmount.addTextChangedListener(object : TextWatcher {
 
@@ -105,12 +107,28 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
                 setResultOkToPreviousFragment()
                 findNavController().navigateUp()
             }
-            is CurrencyExchangeFragmentState.ShowToast -> requireActivity().showToast(state.message)
+
             is CurrencyExchangeFragmentState.ShowCount ->  conventionFee(state.count)
             is CurrencyExchangeFragmentState.UpdateBalance ->  update(state.currencyName,state.amount,state.euroAmount,state.type)
             is CurrencyExchangeFragmentState.UpdateAmount ->  updateAmount(state.balance,state.amount,state.euroAmount,state.currencyName,state.type)
             is CurrencyExchangeFragmentState.Init -> Unit
         }
+    }
+    private fun observationPopUp(){
+
+        viewModel.popUp.flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.CREATED)
+            .onEach { product ->
+                product?.let { popUp(it) }
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+    }
+    private fun popUp(value: Boolean){
+        if (value){
+            SomeUtils.showPopUp(requireActivity(),viewModel.message!!)
+            viewModel.setValue(false)
+        }
+
+
     }
     private fun observeFirstRate(){
         viewModel.firstRate.flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
@@ -135,6 +153,7 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
             .launchIn(viewLifecycleOwner.lifecycleScope)
     }
     private fun handleFirstRate(rateEntity: RateEntity){
+
         val currency = ExtendedCurrency.getCurrencyByISO(rateEntity.query.from)
         firstRate=rateEntity.info.rate
         binding.txtCurrencySpinner.text = currency.name
@@ -173,17 +192,23 @@ class CurrencyExchangeFragment : Fragment(R.layout.fragment_currency_exchange){
         binding.firstSpinner.setOnClickListener {
             val picker: CurrencyPicker = CurrencyPicker.newInstance("Select Currency")
             picker.setListener { name, code, symbol, flagDrawableResID ->
-                binding.txtCurrencySpinner.text = name
-                firstCurrencyName=code
-                binding.imgFirstDynamic.setImageResource(flagDrawableResID)
-                if (code.equals("INR")) {
-                    binding.textSelectedCurrency.text = "₹"
-                } else {
-                    binding.textSelectedCurrency.text = symbol
+                if (!code.equals(secondCurrencyName)){
+                    binding.txtCurrencySpinner.text = name
+                    firstCurrencyName=code
+                    binding.imgFirstDynamic.setImageResource(flagDrawableResID)
+                    if (code.equals("INR")) {
+                        binding.textSelectedCurrency.text = "₹"
+                    } else {
+                        binding.textSelectedCurrency.text = symbol
+                    }
+                    viewModel.convertFirstValue(1.00,code,secondCurrencyName)
+                    binding.txtSecondUserAmount.setText("")
+                    binding.txtFirstAmount.setText("")
                 }
-                viewModel.convertFirstValue(1.00,code,secondCurrencyName)
-                binding.txtSecondUserAmount.setText("")
-                binding.txtFirstAmount.setText("")
+                else{
+                    SomeUtils.showPopUp(requireActivity(),"You selected same currency.Please use other currency. Thanks for your patience!")
+                }
+
                 picker.dismiss()
             }
             picker.show(parentFragmentManager, "CURRENCY_PICKER")

@@ -1,8 +1,5 @@
 package com.currency.exchanger.data.rate.remote.api
 
-import com.currency.exchanger.data.common.utils.WrappedListResponse
-import com.currency.exchanger.data.common.utils.WrappedResponse
-import com.currency.exchanger.data.product.remote.dto.ProductResponse
 import com.currency.exchanger.data.rate.remote.dto.RateResponse
 import retrofit2.Response
 import retrofit2.http.GET

@@ -8,6 +8,7 @@ class SharedPrefs (private val context: Context) {
     companion object {
         private const val PREF = "MyAppPrefName"
         private const val PREF_TOKEN = "user_token"
+        private const val PREF_CURRENCY= "currency"
     }
 
     private val sharedPref: SharedPreferences = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
@@ -16,7 +17,12 @@ class SharedPrefs (private val context: Context) {
     fun saveToken(token: String){
         put(PREF_TOKEN, token)
     }
-
+    fun saveCurrency(currency: Boolean){
+        put(PREF_CURRENCY, currency)
+    }
+    fun getCurrency():Boolean{
+        return get(PREF_CURRENCY, Boolean::class.java)
+    }
     fun getToken() : String {
         return get(PREF_TOKEN, String::class.java)
     }

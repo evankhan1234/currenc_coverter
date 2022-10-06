@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.currency.exchanger.data.rate.local.dto.Balance
 import com.currency.exchanger.domain.rate.usecase.GetBalanceListUseCase
-import com.currency.exchanger.presentation.main.home.HomeMainFragmentState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
