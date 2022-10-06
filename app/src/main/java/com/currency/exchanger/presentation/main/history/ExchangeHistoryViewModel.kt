@@ -2,8 +2,8 @@ package com.currency.exchanger.presentation.main.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.currency.exchanger.data.rate.local.dto.Exchange
-import com.currency.exchanger.domain.rate.usecase.GetExchangeListUseCase
+import com.currency.exchanger.data.currency.local.dto.Exchange
+import com.currency.exchanger.domain.currency.usecase.GetExchangeListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

@@ -108,7 +108,7 @@
             tools:ignore="RtlSymmetry" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/products_recycler_view"
+            android:id="@+id/balance_recycler_view"
             android:layout_width="match_parent"
             android:layout_marginEnd="@dimen/_5sdp"
             android:layout_marginTop="@dimen/_18sdp"

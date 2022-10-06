@@ -9,7 +9,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.currency.exchanger.R
-import com.currency.exchanger.data.rate.local.dto.Exchange
+import com.currency.exchanger.data.currency.local.dto.Exchange
 import com.currency.exchanger.databinding.FragmentExchangeHistoryBinding
 import com.currency.exchanger.presentation.common.extension.showToast
 
@@ -77,15 +77,6 @@ class ExchangeHistoryFragment : Fragment(R.layout.fragment_exchange_history) {
     }
 
     private fun handleLoading(isLoading: Boolean) {
-        //  binding.saveButton.isEnabled = !isLoading
-    }
-
-    private fun setProductNameError(e: String?) {
-        //  binding.productNameInput.error = e
-    }
-
-    private fun setProductPriceError(e: String?) {
-        //   binding.productPriceInput.error = e
     }
 
     override fun onDestroy() {

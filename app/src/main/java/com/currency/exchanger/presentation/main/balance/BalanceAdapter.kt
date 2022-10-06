@@ -4,10 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat.setBackground
 import androidx.recyclerview.widget.RecyclerView
 import com.currency.exchanger.R
-import com.currency.exchanger.data.rate.local.dto.Balance
+import com.currency.exchanger.data.currency.local.dto.Balance
 import com.currency.exchanger.databinding.LayoutBalanceListBinding
 import com.mynameismidori.currencypicker.ExtendedCurrency
 import java.text.DecimalFormat

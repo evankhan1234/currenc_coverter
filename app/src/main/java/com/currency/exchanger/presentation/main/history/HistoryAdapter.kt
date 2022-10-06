@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.currency.exchanger.data.rate.local.dto.Exchange
+import com.currency.exchanger.data.currency.local.dto.Exchange
 import com.currency.exchanger.databinding.LayoutTransactionsListBinding
 import com.mynameismidori.currencypicker.ExtendedCurrency
 import java.text.DecimalFormat
@@ -24,7 +24,6 @@ class HistoryAdapter(private val products: MutableList<Exchange>, val context: C
             val df = DecimalFormat("00.00")
             val fromCurrency = ExtendedCurrency.getCurrencyByISO(exchange.fromCurrency)
             val toCurrency = ExtendedCurrency.getCurrencyByISO(exchange.toCurrency)
-
             itemBinding.txtFromAmount.text = fromCurrency.symbol + " " + df.format(exchange.fromAmount)
             itemBinding.txtToAmount.text = toCurrency.symbol + " " + df.format(exchange.convertedAmount)
             itemBinding.txtFromCurrencyName.text = "From - " + exchange.fromCurrency

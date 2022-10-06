@@ -3,33 +3,32 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'org.jetbrains.kotlin.kapt'
 }
-
-
-
 android {
-    compileSdkVersion 31
-    buildToolsVersion "30.0.3"
-
+    compileSdkVersion 33
     defaultConfig {
         applicationId "com.currency.exchanger"
         minSdkVersion 16
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-        // default build config
         buildConfigField 'String', 'API_BASE_URL', '"https://api.exchangerate.host/"'
     }
-
+    hilt {
+        enableTransformForLocalTests = true
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        pickFirst 'META-INF/AL2.0'
+        pickFirst 'META-INF/LGPL2.1'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -53,13 +52,12 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.4.0-alpha04'
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.0-alpha04'
     implementation 'com.google.firebase:protolite-well-known-types:18.0.0'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
-    // httpz
     implementation 'com.github.midorikocak:currency-picker-android:1.2.1'
     implementation 'com.github.midorikocak:currency-picker-android:1.2.1'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
@@ -67,23 +65,16 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_logging_version"
     implementation 'com.makeramen:roundedimageview:2.3.0'
-    // coroutine
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
-
-    // dagger - Hilt
     implementation "com.google.dagger:hilt-android:$dagger_hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$dagger_hilt_version"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$dagger_hilt_viewmodel_version"
     kapt "androidx.hilt:hilt-compiler:$dagger_hilt_viewmodel_version"
-
-    // Activity KTX for viewModels()
     implementation "androidx.activity:activity-ktx:$activity_ktx_version"
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
-    //ROOM DB
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-    implementation "androidx.room:room-paging:$room_version"
 
 }

@@ -57,4 +57,14 @@
     <string name="euro">Euro</string>
     <string name="exchange">Exchange</string>
     <string name="okay">Okay</string>
+    <string name="network">Network Not Connected</string>
+    <string name="currency_picker">CURRENCY_PICKER</string>
+    <string name="select_currency">Select Currency</string>
+    <string name="enter_amount">Please enter amount</string>
+    <string name="euro_code">EUR</string>
+    <string name="usd_code">USD</string>
+    <string name="zero_fee">0.00 EUR</string>
+    <string name="decimal_value">00.00</string>
+    <string name="success_create">success_create</string>
+    <string name="same_currency_text">You selected same currency.Please use other currency. Thanks for your patience!</string>
 </resources>
