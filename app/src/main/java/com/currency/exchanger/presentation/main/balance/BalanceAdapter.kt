@@ -15,9 +15,9 @@ import java.text.DecimalFormat
 class BalanceAdapter(private val products: MutableList<Balance>, val context: Context) :
     RecyclerView.Adapter<BalanceAdapter.ViewHolder>() {
 
-    fun updateList(mProducts: List<Balance>) {
+    fun updateList(balance: List<Balance>) {
         products.clear()
-        products.addAll(mProducts)
+        products.addAll(balance)
         notifyDataSetChanged()
     }
 

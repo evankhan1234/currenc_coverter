@@ -269,7 +269,7 @@
         android:weightSum="2"
         android:layout_marginStart="@dimen/_5sdp"
         android:background="@drawable/background_drawable_exchange"
-        android:layout_marginTop="@dimen/_7sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/_5sdp"
         android:layout_marginRight="@dimen/_5sdp"
         android:layout_marginLeft="@dimen/_5sdp"

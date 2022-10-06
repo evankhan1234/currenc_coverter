@@ -10,6 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/_2sdp"
         android:background="@color/white">
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_first_dynamic"

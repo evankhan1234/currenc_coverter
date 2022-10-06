@@ -170,10 +170,39 @@ class CurrencyExchangeViewModel @Inject constructor(
         _toBoolean.value=true
         exchangeHide(false)
         viewModelScope.launch {
-            val size = exchangeCountUseCase.invoke()
-            if (size > 5) {
-                val item = size.toDouble() / 5
-                if (SomeUtils.isInteger(item)) {
+            val data =currencyDetailsUseCase.invoke(fromCurrency)
+            val fromAvailable = data.available!! - fromAmount
+            if (fromAvailable>-1){
+                val size = exchangeCountUseCase.invoke()
+                if (size > 5) {
+                    val item = size.toDouble() / 5
+                    if (SomeUtils.isInteger(item)) {
+                        exchangeLocalUseCase.invoke(
+                            Exchange(
+                                0,
+                                fromCurrency,
+                                toCurrency,
+                                fromAmount,
+                                toAmount,
+                                0.00,
+                                SomeUtils.convertDateTime()
+                            )
+                        )
+                    } else {
+                        exchangeLocalUseCase.invoke(
+                            Exchange(
+                                0,
+                                fromCurrency,
+                                toCurrency,
+                                fromAmount,
+                                toAmount,
+                                0.70,
+                                SomeUtils.convertDateTime()
+                            )
+                        )
+
+                    }
+                } else {
                     exchangeLocalUseCase.invoke(
                         Exchange(
                             0,
@@ -185,44 +214,18 @@ class CurrencyExchangeViewModel @Inject constructor(
                             SomeUtils.convertDateTime()
                         )
                     )
-                } else {
-                    exchangeLocalUseCase.invoke(
-                        Exchange(
-                            0,
-                            fromCurrency,
-                            toCurrency,
-                            fromAmount,
-                            toAmount,
-                            0.70,
-                            SomeUtils.convertDateTime()
-                        )
-                    )
 
                 }
-            } else {
-                exchangeLocalUseCase.invoke(
-                    Exchange(
-                        0,
-                        fromCurrency,
-                        toCurrency,
-                        fromAmount,
-                        toAmount,
-                        0.00,
-                        SomeUtils.convertDateTime()
-                    )
-                )
-
             }
+
             euroRate(toCurrency, toAmount, "to")
             euroRate(fromCurrency, fromAmount, "from")
 
         }
     }
 
-    private suspend fun euroRate(currencyName: String, amount: Double, type: String) {
+    private fun euroRate(currencyName: String, amount: Double, type: String) {
         viewModelScope.launch {
-
-            Log.e("euro","rate"+currencyName)
             convertUseCase.invoke(amount, currencyName, "EUR")
                 .onStart {
                     setLoading()

@@ -26,7 +26,9 @@ class HistoryAdapter(private val products: MutableList<Exchange>, val context: C
             val toCurrency = ExtendedCurrency.getCurrencyByISO(exchange.toCurrency)
 
             itemBinding.txtFromAmount.text = fromCurrency.symbol + " " + df.format(exchange.fromAmount)
-            itemBinding.txtToAmount.text = fromCurrency.symbol + " " + df.format(exchange.convertedAmount)
+            itemBinding.txtToAmount.text = toCurrency.symbol + " " + df.format(exchange.convertedAmount)
+            itemBinding.txtFromCurrencyName.text = "From - " + exchange.fromCurrency
+            itemBinding.txtToCurrencyName.text = "Converted - " + exchange.toCurrency
             itemBinding.imgFirstDynamic.setImageResource(fromCurrency.flag)
             itemBinding.imgSecondDynamic.setImageResource(toCurrency.flag)
             itemBinding.txtDate.text=exchange.releaseDate

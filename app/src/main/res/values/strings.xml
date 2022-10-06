@@ -56,4 +56,5 @@
     <string name="usd">United States Dollar</string>
     <string name="euro">Euro</string>
     <string name="exchange">Exchange</string>
+    <string name="okay">Okay</string>
 </resources>
